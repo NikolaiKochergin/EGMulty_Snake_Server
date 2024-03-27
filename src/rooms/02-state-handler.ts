@@ -2,11 +2,9 @@ import { Room, Client } from "colyseus";
 import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class Player extends Schema {
-    @type("number")
-    x = Math.floor(Math.random() * 400);
-
-    @type("number")
-    y = Math.floor(Math.random() * 400);
+    @type("number") x = Math.floor(Math.random() * 400);
+    @type("number") y = Math.floor(Math.random() * 400);
+    @type("uint8") d = 2;
 }
 
 export class State extends Schema {
@@ -52,7 +50,6 @@ export class StateHandlerRoom extends Room<State> {
     }
 
     onJoin (client: Client) {
-        client.send("hello", "world");
         this.state.createPlayer(client.sessionId);
     }
 
