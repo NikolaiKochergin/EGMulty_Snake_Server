@@ -5,6 +5,7 @@ export class Player extends Schema {
     @type("number") x = Math.floor(Math.random() * 256) - 128;
     @type("number") z = Math.floor(Math.random() * 256) - 128;
     @type("uint8") d = 2;
+    @type("uint8") c = 0;
 }
 
 export class State extends Schema {
@@ -14,7 +15,9 @@ export class State extends Schema {
     something = "This attribute won't be sent to the client-side";
 
     createPlayer(sessionId: string) {
-        this.players.set(sessionId, new Player());
+        let newPlayer = new Player();
+        newPlayer.c = this.players.size;
+        this.players.set(sessionId, newPlayer);
     }
 
     removePlayer(sessionId: string) {
@@ -28,7 +31,7 @@ export class State extends Schema {
 }
 
 export class StateHandlerRoom extends Room<State> {
-    maxClients = 4;
+    maxClients = 5;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
