@@ -2,6 +2,7 @@ import { Room, Client } from "colyseus";
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 
 export class Player extends Schema {
+    @type("string") login = "";
     @type("number") x = Math.floor(Math.random() * 256) - 128;
     @type("number") z = Math.floor(Math.random() * 256) - 128;
     @type("uint8") d = 0;
@@ -39,8 +40,9 @@ export class State extends Schema {
         player.d = Math.round(player.score / 3);
     }
 
-    createPlayer(sessionId: string) {
-        let newPlayer = new Player();
+    createPlayer(sessionId: string, login: string) {
+        const newPlayer = new Player();
+        newPlayer.login = login;
         newPlayer.c = this.players.size;
         this.players.set(sessionId, newPlayer);
     }
@@ -112,8 +114,8 @@ export class StateHandlerRoom extends Room<State> {
         return true;
     }
 
-    onJoin (client: Client) {
-        this.state.createPlayer(client.sessionId);
+    onJoin (client: Client, data) {
+        this.state.createPlayer(client.sessionId, data.login);
     }
 
     onLeave (client) {
